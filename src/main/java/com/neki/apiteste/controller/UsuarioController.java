@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,14 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neki.apiteste.domain.model.Usuario;
+import com.neki.apiteste.domain.model.Login.LoginRequest;
+import com.neki.apiteste.domain.model.Login.LoginResponse;
 import com.neki.apiteste.domain.service.UsuarioService;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/user")
 public class UsuarioController {
   
   @Autowired
-  UsuarioService service;
+  private UsuarioService service;
 
   @GetMapping
   public ResponseEntity<List<Usuario>> getAll(){
@@ -54,6 +58,11 @@ public class UsuarioController {
   public ResponseEntity<?> delete(@PathVariable Long id){
     service.delete(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @PostMapping("/login")
+  public LoginResponse login(@RequestBody LoginRequest request){
+    return service.login(request.getLogin(), request.getPassword());
   }
 
 }

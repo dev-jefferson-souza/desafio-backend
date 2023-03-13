@@ -1,6 +1,7 @@
 package com.neki.apiteste.domain.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -16,8 +17,12 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -32,10 +37,9 @@ import lombok.EqualsAndHashCode;
   allocationSize = 1,
   schema = "teste_residencia"
 )
-
-@Entity(name = "Usuario")
+@Entity
 @Table(name = "user", schema = "teste_residencia")
-public class Usuario {
+public class Usuario implements UserDetails{
 
   @EqualsAndHashCode.Include
   @Id
@@ -45,10 +49,10 @@ public class Usuario {
   )
   private Long id;
 
-   @Column(nullable = false, length = 12)
+  @Column(nullable = false, length = 12)
   private String login;
 
-  // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @Column(nullable = false, length = 100)
   private String password;
 
@@ -64,4 +68,47 @@ public class Usuario {
     inverseJoinColumns = @JoinColumn(name = "skill_id")
   )
   private List<Skill> skill = new ArrayList<Skill>();
+
+  //Implementação do UserDetails
+  @Override
+  @JsonIgnore
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return null;
+  }
+
+  @Override
+  @JsonIgnore
+  public String getUsername() {
+    return login;
+  }
+
+  @Override
+  @JsonIgnore
+  public String getPassword() {
+    return password;
+  }
+
+  @Override
+  @JsonIgnore
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  @JsonIgnore
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  @JsonIgnore
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  @JsonIgnore
+  public boolean isEnabled() {
+    return true;
+  }
 }

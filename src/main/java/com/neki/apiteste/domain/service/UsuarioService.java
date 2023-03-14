@@ -1,6 +1,7 @@
 package com.neki.apiteste.domain.service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,6 +92,10 @@ public class UsuarioService {
     String token = headerPrefix + jwtService.generateToken(authentication);
 
     Usuario usuario = repository.findByLogin(login).get();
+
+    usuario.setLastLoginDate(new Date());
+    repository.save(usuario);
+
     
     return new LoginResponse(token, usuario);
   }

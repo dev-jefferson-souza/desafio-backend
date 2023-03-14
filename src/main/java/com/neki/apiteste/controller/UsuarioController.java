@@ -22,7 +22,7 @@ import com.neki.apiteste.domain.model.Login.LoginRequest;
 import com.neki.apiteste.domain.model.Login.LoginResponse;
 import com.neki.apiteste.domain.service.UsuarioService;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "**", allowedHeaders = "**", exposedHeaders = "Authorization")
 @RestController
 @RequestMapping("/user")
 public class UsuarioController {

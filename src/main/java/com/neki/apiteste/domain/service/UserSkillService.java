@@ -35,9 +35,7 @@ public class UserSkillService {
 
   public List<UserSkillInfo> findSkillByUserId(Long userId) {
     List<UserSkillInfo> userSkills = repository.findSkillByUserId(userId);
-    if (userSkills.isEmpty()) {
-      throw new ResourceNotFoundException("Não foi possível encontrar habilidades para o usuário com id: " + userId);
-    }
+   
     return userSkills;
   }
   

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.neki.apiteste.domain.exception.ResourceNotFoundException;
 import com.neki.apiteste.domain.model.UserSkill;
 import com.neki.apiteste.domain.repository.UserSkillRepository;
+import com.neki.apiteste.domain.shared.UserSkillInfo;
+
 
 @Service
 public class UserSkillService {
@@ -28,8 +30,17 @@ public class UserSkillService {
   }
 
   public List<UserSkill> getAll() {
-    return repository.findAllByOrderByCreatedAtAsc();
+    return repository.findAll();
   }
+
+  public List<UserSkillInfo> findSkillByUserId(Long userId) {
+    List<UserSkillInfo> userSkills = repository.findSkillByUserId(userId);
+    if (userSkills.isEmpty()) {
+      throw new ResourceNotFoundException("Não foi possível encontrar habilidades para o usuário com id: " + userId);
+    }
+    return userSkills;
+  }
+  
 
   @Transactional
   public UserSkill register(UserSkill userSkill) {

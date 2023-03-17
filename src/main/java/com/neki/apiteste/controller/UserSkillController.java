@@ -24,6 +24,7 @@ import com.neki.apiteste.domain.model.UserSkill;
 import com.neki.apiteste.domain.repository.UserSkillRepository;
 import com.neki.apiteste.domain.service.UserSkillService;
 import com.neki.apiteste.domain.shared.UpdateUserSkill;
+import com.neki.apiteste.domain.shared.UserSkillInfo;
 
 @CrossOrigin(origins = "**", allowedHeaders = "**", exposedHeaders = "Authorization")
 @RestController
@@ -39,6 +40,12 @@ public class UserSkillController {
   @GetMapping
   public ResponseEntity<List<UserSkill>> getAll(){
     List<UserSkill> list = service.getAll();
+    return ResponseEntity.ok(list);
+  }
+
+  @GetMapping("/user/{id}")
+  public ResponseEntity<List<UserSkillInfo>> getUserSkill(@PathVariable Long id){
+    List<UserSkillInfo> list = service.findSkillByUserId(id);
     return ResponseEntity.ok(list);
   }
 

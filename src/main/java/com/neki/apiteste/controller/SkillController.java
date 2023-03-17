@@ -3,10 +3,11 @@ package com.neki.apiteste.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,42 +19,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neki.apiteste.domain.exception.BadRequestException;
-import com.neki.apiteste.domain.model.Usuario;
-import com.neki.apiteste.domain.model.Login.LoginRequest;
-import com.neki.apiteste.domain.model.Login.LoginResponse;
-import com.neki.apiteste.domain.service.UsuarioService;
+import com.neki.apiteste.domain.model.Skill;
+import com.neki.apiteste.domain.service.SkillService;
 
 @CrossOrigin(origins = "**", allowedHeaders = "**", exposedHeaders = "Authorization")
 @RestController
-@RequestMapping("/user")
-public class UsuarioController {
+@RequestMapping("/skill")
+public class SkillController {
   
   @Autowired
-  private UsuarioService service;
+  private SkillService service;
 
   @GetMapping
-  public ResponseEntity<List<Usuario>> getAll(){
-    List<Usuario> list = service.getAll();
+  public ResponseEntity<List<Skill>> getAll(){
+    List<Skill> list = service.getAll();
     return ResponseEntity.ok(list);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Usuario> getById(@PathVariable Long id){
-    Optional<Usuario> optUsuario = service.getById(id);
-    return ResponseEntity.ok(optUsuario.get());
+  public ResponseEntity<Skill> getById(@PathVariable Long id){
+    Optional<Skill> optSkill = service.findById(id);
+    return ResponseEntity.ok(optSkill.get());
   }
 
   @PostMapping
-  public ResponseEntity<Usuario> register(@Validated @RequestBody Usuario usuario){
-    usuario = service.register(usuario);
-
-    return new ResponseEntity<>(usuario, HttpStatus.CREATED);
+  public ResponseEntity<Skill> register(@Valid @RequestBody Skill skill){
+    try{
+      skill = service.register(skill);
+    }catch(Exception e){
+      throw new BadRequestException("O objeto está incompleto, por favor verifique o objeto enviado.");
+    }
+    return new ResponseEntity<>(skill, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario usuario){
-    try{      
-      return ResponseEntity.ok(service.update(id, usuario));
+  public ResponseEntity<Skill> update(@PathVariable Long id, @RequestBody Skill skill){
+    try{
+      return ResponseEntity.ok(service.update(id, skill));
     }catch(Exception e){
       throw new BadRequestException("O objeto está incompleto, por favor verifique o objeto enviado.");
     }
@@ -65,10 +67,6 @@ public class UsuarioController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @PostMapping("/login")
-  public LoginResponse login(@RequestBody LoginRequest request){
-    return service.login(request.getLogin(), request.getPassword());
-  }
+ 
 
 }
-

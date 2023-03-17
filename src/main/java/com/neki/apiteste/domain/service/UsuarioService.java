@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.neki.apiteste.domain.exception.BadRequestException;
 import com.neki.apiteste.domain.exception.DataIntegrityViolationException;
 import com.neki.apiteste.domain.exception.ResourceNotFoundException;
 import com.neki.apiteste.domain.model.Usuario;
@@ -53,8 +56,13 @@ public class UsuarioService {
     return repository.findByLogin(login);
   }
 
+  @Transactional
   public Usuario register(Usuario usuario) {
     usuario.setId(null);
+    
+    if (usuario.getLogin() == null || usuario.getPassword() == null) {
+      throw new BadRequestException("Usuário ou senha não foram enviados.");
+    }
 
     if (getByLogin(usuario.getLogin()).isPresent()) {
 
@@ -67,6 +75,7 @@ public class UsuarioService {
     return repository.save(usuario);
   }
 
+  @Transactional
   public Usuario update(Long id, Usuario usuario) {
     repository.findById(id);
     usuario.setId(id);
